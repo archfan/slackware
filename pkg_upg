@@ -22,24 +22,9 @@
 #  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Modified to handle either old 8.3 or new package-version-arch-build.tgz
-# packages, Sat Nov 17 14:25:58 PST 2001 volkerdi
-#
-# Rewritten to clean out _all_ old packages of a given basename, not just
-# the first one found, Thu Apr  4 01:01:05 PST 2002 volkerdi
-#
-# Added --install-new and --reinstall, Fri May 31 14:11:14 PDT 2002 volkerdi
-# Added --dry-run, Sat Apr 26 18:13:29 PDT 2003
-#
-# Sat Apr 25 21:18:53 UTC 2009
-# Support new compression types and package extensions.
-# Converted to use new pkgbase() function to remove pathname and
-# valid package extensions.
-#
-# Sat 17 Jan 16:21:32 UTC 2015  mina86
-# Various optimisation mostly resolving around avoiding having to fork
-# and call cut, basename and other helper commands.  Slight
-# refactoring of code calling removepkg.
+# Wed 27 Aug 00:30 CEST 2016  
+# Renamed installpkg to pkg_in, removepkg to pkg_del and moved
+# these pieces to /usr/local to where they belong.
 
 # Return a package name that has been stripped of the dirname portion
 # and any of the valid extensions (only):
@@ -228,7 +213,7 @@ for ARG; do
 +==============================================================================
 
 EOF
-        /sbin/installpkg $INCOMINGDIR/$NNAME
+        /usr/local/sbin/pkg_in $INCOMINGDIR/$NNAME
       fi
     fi
     continue;
@@ -302,11 +287,11 @@ EOF
 
   # Next, the new package is pre-installed:
   if [ "$VERBOSE" = "verbose" ]; then
-    /sbin/installpkg $INCOMINGDIR/$NNAME
+    /usr/local/sbin/pkg_in $INCOMINGDIR/$NNAME
     RETCODE=$?
   else
     echo "Pre-installing package $NEW..."
-    /sbin/installpkg $INCOMINGDIR/$NNAME 1> /dev/null
+    /usr/local/sbin/pkg_in $INCOMINGDIR/$NNAME 1> /dev/null
     RETCODE=$?
   fi
   # Make sure that worked:
@@ -323,9 +308,9 @@ EOF
   # Now, the leftovers from the old package(s) can go.  Pretty simple, huh? :)
   for rempkg in "$ROOT/var/log/packages/"*"-$TIMESTAMP"; do
     if [ "$VERBOSE" = "verbose" ]; then
-      /sbin/removepkg "${rempkg##*/}"
+      /usr/local/sbin/pkg_del "${rempkg##*/}"
     else
-      /sbin/removepkg "${rempkg##*/}" | grep -v 'Skipping\.\|Removing files:'
+      /usr/local/sbin/pkg_del "${rempkg##*/}" | grep -v 'Skipping\.\|Removing files:'
     fi
   done
   echo
@@ -334,7 +319,7 @@ EOF
   # Seriously, the reinstalling of a package can be crucial if any files
   # shift location, so we should always reinstall as the final step:
   if [ ! "$NOT_PARANOID" = "true" ]; then
-    /sbin/installpkg $INCOMINGDIR/$NNAME
+    /usr/local/sbin/pkg_in $INCOMINGDIR/$NNAME
   fi
 
   echo "Package $OLD upgraded with new package $INCOMINGDIR/$NNAME."

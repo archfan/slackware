@@ -21,42 +21,9 @@
 #  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Sun Sep  6 21:58:36 BST 2009
-# Replaced usage of "cat" with STDIN redirection or file name parameters
-# to speed up execution on ARM.
-# Replaced pkgbase & package_name code with 'sed' script by Jim Hawkins.
-#
-# Sat Apr 25 21:18:53 UTC 2009
-# Converted to use new pkgbase() function to remove pathname and
-# valid package extensions.
-#
-# Sat Apr  4 22:58:06 CDT 2009
-# Support additional compression formats if the supporting utilities exist:
-# .tbz - bzip2
-# .tlz - lzma
-# .txz - xz (also LZMA)
-# And of course, .tgz (gzip) is not going anywhere.  :-) <volkerdi>
-# Add command switches to determine the uncompressed package size even if
-# that will slow things down, and to add the package's md5sum to the
-# metadata stored in /var/log/packages/.
-#
-# Fri Dec 21 17:21:35 CST 2007
-# Added a patch from Johnny Morano to work around package removal issues
-# caused by packages that do not comply with FHS combined with a grep
-# regex error in installpkg.  Any package with a single-letter top-
-# level directory could not be removed.
-#
-# Shortened some of the top-line dialog output to avoid overflowing the
-# textbox (needed as some of the packages, especially in X, have very
-# long base package names now).  <pjv>
-#
-# Sun Nov 26 12:38:25 CST 1995
-# Added patch from Glenn Moloney <glenn@physics.unimelb.edu.au> to allow
-# packages to be installed to directories other than /.
-#
-# Wed Mar 18 15:15:51 CST 1998
-# Changed $TMP directory to /var/log/setup/tmp, and chmod'ed it 700 to close
-# some security holes.
+# Wed Aug 27 00:24 CEST 2016
+# Changed $ADM_DIR to /usr/local
+# pkg_info will be replaced with a simpler and less clumsy tool very soon.
 
 # A stronger formula is needed to regularize output that will be parsed.
 unset LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY \
@@ -194,7 +161,7 @@ while [ 0 ]; do
 done
 
 # Set the prefix for the package database directories (packages, scripts).
-ADM_DIR="$ROOT/var/log"
+ADM_DIR="$ROOT/usr/local/var/log"
 # If the directories don't exist, "initialize" the package database:
 for PKGDBDIR in packages removed_packages removed_scripts scripts setup ; do
   if [ ! -d $ADM_DIR/$PKGDBDIR ]; then

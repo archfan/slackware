@@ -113,7 +113,7 @@ our $tempdir = tempdir(CLEANUP => 1, DIR => $tmpd);
 
 # define this to facilitate unit testing - should only ever be modified from
 # t/01-test.t
-our $pkg_db = '/var/log/packages';
+our $pkg_db = '/usr/local/var/log/packages';
 
 # _race::cond will allow both documenting and testing race conditions
 # by overriding its implementation for tests
@@ -178,7 +178,7 @@ sub read_config {
 		my ($fh, $exit) = open_read $conf_file;
 		if ($exit) {
 			warn $fh;
-			$config{SBO_HOME} = '/usr/sbo';
+			$config{SBO_HOME} = '/usr/ports';
 			return;
 		}
 		my $text = do {local $/; <$fh>};
@@ -189,14 +189,14 @@ sub read_config {
 		$config{$key} = $conf_values{$key} if exists $conf_values{$key};
 	}
 	$config{JOBS} = 'FALSE' unless $config{JOBS} =~ /^\d+$/;
-	$config{SBO_HOME} = '/usr/sbo' if $config{SBO_HOME} eq 'FALSE';
+	$config{SBO_HOME} = '/usr/ports' if $config{SBO_HOME} eq 'FALSE';
 }
 
 read_config();
 
 # some stuff we'll need later - define first two as our for unit testing
 our $distfiles = "$config{SBO_HOME}/distfiles";
-our $repo_path = "$config{SBO_HOME}/repo";
+our $repo_path = "$config{SBO_HOME}/";
 our $slackbuilds_txt = "$repo_path/SLACKBUILDS.TXT";
 my $name_regex = '\ASLACKBUILD\s+NAME:\s+';
 
@@ -264,7 +264,7 @@ sub indent {
 	return join "\n", @lines;
 }
 
-# Move everything in /usr/sbo except distfiles and repo dirs into repo dir
+# Move everything in /usr/ports except distfiles and repo dirs into repo dir
 sub migrate_repo {
 	make_path($repo_path) unless -d $repo_path;
 	_race::cond '$repo_path can be deleted between being made and being used';
@@ -1233,7 +1233,7 @@ sub make_distclean {
 # run upgradepkg for a created package
 sub do_upgradepkg {
 	script_error('do_upgradepkg requires an argument.') unless @_ == 1;
-	system('/sbin/upgradepkg', '--reinstall', '--install-new', shift);
+	system('/usr/local/sbin/pkg_upg', '--reinstall', '--install-new', shift);
 	return 1;
 }
 

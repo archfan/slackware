@@ -10,7 +10,7 @@ The current configuration keys are as follows:
 .P
 DISTCLEAN=(FALSE|TRUE)
 .RS
-If TRUE, then DO remove the source code after building the slackbuild. By default, the source code is not removed, and lives under $SBO_HOME/distfiles, which, by default, is /usr/sbo/distfiles. Setting this option to TRUE causes the source code to be removed by default. This can be overridden when running sboupgrade(1)/sboinstall(1).
+If TRUE, then DO remove the source code after building the slackbuild. By default, the source code is not removed, and lives under $SBO_HOME/distfiles, which, by default, is /usr/ports/distfiles. Setting this option to TRUE causes the source code to be removed by default. This can be overridden when running sboupgrade(1)/sboinstall(1).
 .RE
 .P
 JOBS=(FALSE|#)
@@ -28,9 +28,9 @@ PKG_DIR=(FALSE|/path)
 If set to a path, packages will be stored at the given location after building and installing. By default, packages are left where they are deposited by SlackBuilds, which is typically (probably always) /tmp (or $OUTPUT). If PKG_DIR is FALSE and DISTCLEAN is TRUE (either in sbotools.conf(5) or at sboupgrade/sboinstall runtime), the package will be deleted. If this option is set to a path in the filesystem, the package will be stored in that directory, regardless of any DISTCLEAN option.
 .RE
 .P
-SBO_HOME=(/usr/sbo|/path)
+SBO_HOME=(/usr/ports|/path)
 .RS
-If set to a path, this is where the slackbuilds.org tree will live; by default, /usr/sbo will be used. If the tree should live elsewhere, this option can be set to the path where the tree should live. Note that if you set this option after fetching the tree to a different location (such as the default), you will need to fetch the tree again.
+If set to a path, this is where the slackbuilds.org tree will live; by default, /usr/ports will be used. If the tree should live elsewhere, this option can be set to the path where the tree should live. Note that if you set this option after fetching the tree to a different location (such as the default), you will need to fetch the tree again.
 .RE
 .P
 LOCAL_OVERRIDES=(FALSE|/path)
