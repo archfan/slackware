@@ -21,6 +21,7 @@ cd $TMP
 rm -rf $SRCNAM-$VERSION
 tar xvf $CWD/$SRCNAM-$VERSION.tar.gz
 cd $SRCNAM-$VERSION
+patch -Np1 < $CWD/sbotools_separation.patch
 chown -R root:root .
 find -L . \
  \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
@@ -28,7 +29,6 @@ find -L . \
  \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
   -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-patch -Np1 < $CWD/sbotools_separation.patch
 
 # we set INSTALLMAN3DIR=none to elide the Sort::Versions.3 man page so that we
 # don't clobber one from perl-Sort-Versions or Sort::Versions.
