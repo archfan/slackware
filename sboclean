@@ -1,0 +1,111 @@
+#!/usr/bin/perl
+#
+# vim: set ts=4:noet
+#
+# sboclean
+# script to clean stuff left around from sbotools.
+#
+# authors: Jacob Pipkin <j@dawnrazor.net>
+#          Luke Williams <xocel@iquidus.org>
+#          Andreas Guldstrand <andreas.guldstrand@gmail.com>
+# license: WTFPL <http://sam.zoy.org/wtfpl/COPYING>
+
+use 5.16.0;
+use strict;
+use warnings FATAL => 'all';
+use SBO::Lib qw/ usage_error script_error in show_version %config /;
+use File::Basename;
+use Getopt::Long qw(:config bundling);
+use File::Path qw(remove_tree);
+
+my $self = basename($0);
+
+sub show_usage {
+	print <<"EOF";
+Usage: $self (options) [package]
+
+Options:
+  -h|--help:
+    this screen.
+  -v|--version:
+    version information.
+  -d|--clean-dist:
+    clean distfiles.
+  -w|--clean-work:
+    clean working directories.
+  -i|--interactive:
+    be interactive.
+
+EOF
+	return 1;
+}
+
+my ($help, $vers, $clean_dist, $clean_work, $interactive);
+
+GetOptions(
+	'help|h'		=> \$help,
+	'version|v'		=> \$vers,
+	'clean-dist|d'	=> \$clean_dist,
+	'clean-work|w'	=> \$clean_work,
+	'interactive|i'	=> \$interactive,
+);
+
+if ($help) { show_usage(); exit 0 }
+if ($vers) { show_version(); exit 0 }
+
+usage_error("You must specify at least one of -d or -w.") unless 
+	($clean_dist || $clean_work);
+
+sub rm_full {
+	script_error('rm_full requires an argument.') unless @_ == 1;
+	my $full = shift;
+	if ($interactive) {
+		print "Remove $full? [n] ";
+		return() unless <STDIN> =~ /^[Yy]/;
+	}
+	unlink $full if -f $full;
+	remove_tree($full) if -d $full;
+	return 1;
+}
+
+sub remove_stuff {
+	script_error 'remove_stuff requires an argument.' unless @_ == 1;
+	my $dir = shift;
+	if (not -d $dir) {
+		say 'Nothing to do.';
+		return 0;
+	}
+	opendir(my $dh, $dir);
+	FIRST: while (my $ls = readdir $dh) {
+		next FIRST if in($ls => qw/ . .. /);
+		rm_full("$dir/$ls");
+	}
+	return 1
+}
+
+sub clean_c32 {
+	my $dir = $SBO::Lib::tmpd;
+	opendir(my $dh, $dir);
+	FIRST: while (my $ls = readdir $dh) {
+		next FIRST unless $ls =~ /^package-.+-compat32$/;
+		rm_full("$dir/$ls");
+	}
+	return 1;
+}
+
+remove_stuff($config{SBO_HOME} .'/distfiles') if $clean_dist;
+
+if ($clean_work) {
+	my $env_tmp = $SBO::Lib::env_tmp;
+	my $tsbo = $SBO::Lib::tmpd;
+	if ($env_tmp && !$interactive) {
+		warn "This will remove the entire contents of $env_tmp\n";
+		print "Proceed? [y] ";
+		remove_stuff($tsbo) if <STDIN> =~ /^[yY\n]/;
+	} else {
+		remove_stuff($tsbo);
+	}
+	clean_c32();
+}
+
+exit 0;
