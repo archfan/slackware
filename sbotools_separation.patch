@@ -1,0 +1,1906 @@
+diff -ruN sbotools-2.0-orig/man1/sboclean.1 sbotools-2.0/man1/sboclean.1
+--- sbotools-2.0-orig/man1/sboclean.1	2016-07-02 10:30:59.000000000 +0200
++++ sbotools-2.0/man1/sboclean.1	2016-08-28 00:38:55.056454537 +0200
+@@ -22,7 +22,7 @@
+ .P
+ -d|--clean-dist
+ .RS
+-Clean distfiles, by default located at /usr/sbo/distfiles.
++Clean distfiles, by default located at /usr/ports/distfiles.
+ .RE
+ .P
+ -w|--clean-work
+diff -ruN sbotools-2.0-orig/man1/sboconfig.1 sbotools-2.0/man1/sboconfig.1
+--- sbotools-2.0-orig/man1/sboconfig.1	2016-07-02 10:30:59.000000000 +0200
++++ sbotools-2.0/man1/sboconfig.1	2016-08-28 00:38:55.056454537 +0200
+@@ -4,7 +4,7 @@
+ sboconfig - set sbotools configuration options.
+ .SH SYNAPSES
+ .P
+-sboconfig [-h|-v] [-l] [-c TRUE|FALSE] [-d TRUE|FALSE] [-j #|FALSE] [-p /path|FALSE] [-s /path|/usr/sbo]
++sboconfig [-h|-v] [-l] [-c TRUE|FALSE] [-d TRUE|FALSE] [-j #|FALSE] [-p /path|FALSE] [-s /path|/usr/ports]
+ .SH DESCRIPTION
+ .P
+ sboconfig is a front-end for managing sbotools configuration options. The sbotools.conf(5) file can also be manually edited; any fields not relevant to sbotools configuration will be ignored.
+@@ -32,7 +32,7 @@
+ .P
+ -d|--distclean (FALSE|TRUE)
+ .RS
+-DISTCLEAN: If TRUE, then DO remove the source code after building the slackbuild. By default, the source code is not removed, and lives under $SBO_HOME/distfiles, which, by default, is /usr/sbo/distfiles. Setting this option to TRUE causes the source code to be removed by default. This can be overridden when running sboupgrade(1)/sboinstall(1).
++DISTCLEAN: If TRUE, then DO remove the source code after building the slackbuild. By default, the source code is not removed, and lives under $SBO_HOME/distfiles, which, by default, is /usr/ports/distfiles. Setting this option to TRUE causes the source code to be removed by default. This can be overridden when running sboupgrade(1)/sboinstall(1).
+ .RE
+ .P
+ -j|--jobs (FALSE|#)
+@@ -45,9 +45,9 @@
+ PKG_DIR: If set to a path, packages will be stored at the given location after building and installing. By default, packages are left where they are deposited by slackbuilds, which is typically (probably always) /tmp (or $OUTPUT). If PKG_DIR is FALSE and DISTCLEAN is TRUE (either in sbotools.conf(5) or at sboupgrade/sboinstall runtime), the package will be deleted. If this option is set to a path in the filesystem, the package will be stored in that directory, regardless of any DISTCLEAN option.
+ .RE
+ .P
+--s|--sbo-home (/usr/sbo|/path)
++-s|--sbo-home (/usr/ports|/path)
+ .RS
+-SBO_HOME: If set to a path, this is where the slackbuilds.org tree will live; by default, /usr/sbo will be used. If the tree should live elsewhere, this option can be set to the path where the tree should live. Note that if you set this option after fetching the tree to a different location (such as the default), you will need to fetch the tree again.
++SBO_HOME: If set to a path, this is where the slackbuilds.org tree will live; by default, /usr/ports will be used. If the tree should live elsewhere, this option can be set to the path where the tree should live. Note that if you set this option after fetching the tree to a different location (such as the default), you will need to fetch the tree again.
+ .RE
+ .P
+ -o|--local-overrides (FALSE|/path)
+diff -ruN sbotools-2.0-orig/man1/sboinstall.1 sbotools-2.0/man1/sboinstall.1
+--- sbotools-2.0-orig/man1/sboinstall.1	2016-07-02 10:30:59.000000000 +0200
++++ sbotools-2.0/man1/sboinstall.1	2016-08-28 00:38:55.056454537 +0200
+@@ -27,7 +27,7 @@
+ .P
+ -d|--distclean (FALSE|TRUE)
+ .RS
+-If TRUE, then DO remove the source code after building the slackbuild. By default, the source code is not removed, and lives under $SBO_HOME/distfiles, which, by default, is /usr/sbo/distfiles; this option can be set as default via the sboconfig(1) command. See also sbotools.conf(5). This option overrides the default.
++If TRUE, then DO remove the source code after building the slackbuild. By default, the source code is not removed, and lives under $SBO_HOME/distfiles, which, by default, is /usr/ports/distfiles; this option can be set as default via the sboconfig(1) command. See also sbotools.conf(5). This option overrides the default.
+ .RE
+ .P
+ -i|--noinstall
+diff -ruN sbotools-2.0-orig/man1/sbosnap.1 sbotools-2.0/man1/sbosnap.1
+--- sbotools-2.0-orig/man1/sbosnap.1	2016-07-02 10:30:59.000000000 +0200
++++ sbotools-2.0/man1/sbosnap.1	2016-08-28 00:38:55.059787898 +0200
+@@ -23,7 +23,7 @@
+ .P
+ fetch
+ .RS
+-Download a local copy of the slackbuilds.org tree. The copy will be downloaded to the SBO_HOME setting (see sboconfig(1) and sbotools.conf(5)), which, by default, is /usr/sbo
++Download a local copy of the slackbuilds.org tree. The copy will be downloaded to the SBO_HOME setting (see sboconfig(1) and sbotools.conf(5)), which, by default, is /usr/ports
+ .RE
+ .P
+ update
+diff -ruN sbotools-2.0-orig/man1/sboupgrade.1 sbotools-2.0/man1/sboupgrade.1
+--- sbotools-2.0-orig/man1/sboupgrade.1	2016-07-02 10:30:59.000000000 +0200
++++ sbotools-2.0/man1/sboupgrade.1	2016-08-28 00:38:55.059787898 +0200
+@@ -27,7 +27,7 @@
+ .P
+ -d|--distclean (FALSE|TRUE)
+ .RS
+-If TRUE, then DO remove the source code after building the slackbuild. By default, the source code is not removed, and lives under $SBO_HOME/distfiles, which, by default, is /usr/sbo/distfiles; this option can be set as default via the sboconfig(1) command. See also sbotools.conf(5). This option overrides the default.
++If TRUE, then DO remove the source code after building the slackbuild. By default, the source code is not removed, and lives under $SBO_HOME/distfiles, which, by default, is /usr/ports/distfiles; this option can be set as default via the sboconfig(1) command. See also sbotools.conf(5). This option overrides the default.
+ .RE
+ .P
+ -f|--force
+diff -ruN sbotools-2.0-orig/man5/sbotools.conf.5 sbotools-2.0/man5/sbotools.conf.5
+--- sbotools-2.0-orig/man5/sbotools.conf.5	2016-07-02 10:30:59.000000000 +0200
++++ sbotools-2.0/man5/sbotools.conf.5	2016-08-28 00:38:55.056454537 +0200
+@@ -10,7 +10,7 @@
+ .P
+ DISTCLEAN=(FALSE|TRUE)
+ .RS
+-If TRUE, then DO remove the source code after building the slackbuild. By default, the source code is not removed, and lives under $SBO_HOME/distfiles, which, by default, is /usr/sbo/distfiles. Setting this option to TRUE causes the source code to be removed by default. This can be overridden when running sboupgrade(1)/sboinstall(1).
++If TRUE, then DO remove the source code after building the slackbuild. By default, the source code is not removed, and lives under $SBO_HOME/distfiles, which, by default, is /usr/ports/distfiles. Setting this option to TRUE causes the source code to be removed by default. This can be overridden when running sboupgrade(1)/sboinstall(1).
+ .RE
+ .P
+ JOBS=(FALSE|#)
+@@ -28,9 +28,9 @@
+ If set to a path, packages will be stored at the given location after building and installing. By default, packages are left where they are deposited by SlackBuilds, which is typically (probably always) /tmp (or $OUTPUT). If PKG_DIR is FALSE and DISTCLEAN is TRUE (either in sbotools.conf(5) or at sboupgrade/sboinstall runtime), the package will be deleted. If this option is set to a path in the filesystem, the package will be stored in that directory, regardless of any DISTCLEAN option.
+ .RE
+ .P
+-SBO_HOME=(/usr/sbo|/path)
++SBO_HOME=(/usr/ports|/path)
+ .RS
+-If set to a path, this is where the slackbuilds.org tree will live; by default, /usr/sbo will be used. If the tree should live elsewhere, this option can be set to the path where the tree should live. Note that if you set this option after fetching the tree to a different location (such as the default), you will need to fetch the tree again.
++If set to a path, this is where the slackbuilds.org tree will live; by default, /usr/ports will be used. If the tree should live elsewhere, this option can be set to the path where the tree should live. Note that if you set this option after fetching the tree to a different location (such as the default), you will need to fetch the tree again.
+ .RE
+ .P
+ LOCAL_OVERRIDES=(FALSE|/path)
+diff -ruN sbotools-2.0-orig/pkg_del sbotools-2.0/pkg_del
+--- sbotools-2.0-orig/pkg_del	1970-01-01 01:00:00.000000000 +0100
++++ sbotools-2.0/pkg_del	2016-08-28 00:28:54.574837180 +0200
+@@ -0,0 +1,322 @@
++#!/bin/sh
++# pkg_del
++#
++# Copyright 1994, 1995, 1998  Patrick Volkerding, Moorhead, Minnesota USA
++# Copyright 2001, Slackware Linux, Inc., Concord, CA USA
++# Copyright 2009, 2015  Patrick J. Volkerding, Sebeka, MN, USA
++# All rights reserved.
++#
++# Redistribution and use of this script, with or without modification, is 
++# permitted provided that the following conditions are met:
++#
++# 1. Redistributions of this script must retain the above copyright
++#    notice, this list of conditions and the following disclaimer.
++#
++#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
++#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
++#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
++#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
++#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
++#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
++#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
++#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
++#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
++#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++#
++# Wed Aug 27 00:25 CEST 2016
++# Changed ADM_DIR and TMP to /usr/local/*
++
++# Return a package name that has been stripped of the dirname portion
++# and any of the valid extensions (only):
++pkgbase() {
++  # basename + strip extensions .tbz, .tgz, .tlz and .txz
++  echo "$1" | sed 's?.*/??;s/\.t[bglx]z$//'
++}
++
++# This makes "sort" run much faster:
++export LC_ALL=C
++
++# Make sure there's a proper temp directory:
++TMP=$ROOT/usr/local/var/log/setup/tmp
++# If the $TMP directory doesn't exist, create it:
++if [ ! -d $TMP ]; then
++  rm -rf $TMP # make sure it's not a symlink or something stupid
++  mkdir -p $TMP
++  chmod 700 $TMP # no need to leave it open
++fi
++ADM_DIR=$ROOT/usr/local/var/log
++PRES_DIR=$TMP/preserved_packages
++
++# This simple cat_except() should be used on the installer,
++# since the busybox "find" can't handle the complex find
++# syntax:
++#cat_except() {
++# ( cd "$1" && cat $(ls * | sed "/^$2\$/d"))
++#}
++
++# This version of cat_except() allows the last package to be
++# removed when ROOT= is used:
++cat_except() {
++  ( cd "$1" && \
++    if [ $(find . -type f -maxdepth 1 | wc -l) -ne 1 ]; then
++      cat $(find . -type f -maxdepth 1 | grep -v "$2")
++    fi
++  )
++}
++
++extract_links() {
++ sed -n 's,^[ ]*( [ ]*cd[ ]* \(.*\) [ ]*; [ ]*rm [ ]*-rf[ ]* \(.*\) [ ]*)[ ]*$,\1/\2,p'
++}
++
++preserve_file() {
++ if [ "$PRESERVE" = "true" ]; then
++  F="$(basename "$1")"
++  D="$(dirname "$1")"
++  if [ ! -d "$PRES_DIR/$PKGNAME/$D" ]; then
++    mkdir -p "$PRES_DIR/$PKGNAME/$D" || return 1
++  fi
++  cp -p "$ROOT/$D/$F" "$PRES_DIR/$PKGNAME/$D" || return 1
++ fi
++ return 0
++}
++
++preserve_dir() {
++ if [ "$PRESERVE" = "true" ]; then
++  if [ ! -d "$PRES_DIR/$PKGNAME/$1" ]; then
++    mkdir -p "$PRES_DIR/$PKGNAME/$1" || return 1
++  fi
++ fi
++ return 0
++}
++
++keep_files() {
++ while read FILE ; do
++  if [ ! -d "$ROOT/$FILE" ]; then
++   if [ -r "$ROOT/$FILE" ]; then
++    echo "  --> $ROOT/$FILE was found in another package. Skipping."
++    preserve_file "$FILE"
++   else
++    if [ "$(echo $FILE | cut -b1-8)" != "install/" ]; then
++     echo "WARNING: Nonexistent $ROOT/$FILE was found in another package. Skipping."
++    fi
++   fi
++  else
++   preserve_dir "$FILE"
++  fi
++ done
++}
++
++keep_links() {
++ while read LINK ; do
++  if [ -L "$ROOT/$LINK" ]; then
++   echo "  --> $ROOT/$LINK (symlink) was found in another package. Skipping."
++  else
++   echo "WARNING: Nonexistent $ROOT/$LINK (symlink) was found in another package. Skipping."
++  fi
++ done
++}
++
++delete_files() {
++ while read FILE ; do
++  if [ ! -d "$ROOT/$FILE" ]; then
++   if [ -r "$ROOT/$FILE" ]; then
++    if [ "$ROOT/$FILE" -nt "$ADM_DIR/packages/$PKGNAME" ]; then
++     echo "WARNING: $ROOT/$FILE changed after package installation."
++    fi
++    if [ ! "$WARN" = "true" ]; then
++     echo "  --> Deleting $ROOT/$FILE"
++     preserve_file "$FILE" && rm -f "$ROOT/$FILE"
++    else
++     echo "  --> $ROOT/$FILE would be deleted"
++     preserve_file "$FILE"
++    fi
++   else
++    echo "  --> $ROOT/$FILE no longer exists. Skipping."
++   fi
++  else
++   preserve_dir "$FILE"
++  fi
++ done
++}
++
++delete_links() {
++ while read LINK ; do
++  if [ -L "$ROOT/$LINK" ]; then
++   if [ ! "$WARN" = "true" ]; then
++    echo "  --> Deleting symlink $ROOT/$LINK"
++    rm -f "$ROOT/$LINK"
++   else
++    echo "  --> $ROOT/$LINK (symlink) would be deleted"
++   fi
++  else
++   echo "  --> $ROOT/$LINK (symlink) no longer exists. Skipping."
++  fi
++ done
++}
++
++delete_dirs() {
++ sort -r | \
++ while read DIR ; do
++  if [ -d "$ROOT/$DIR" ]; then
++    if [ ! "$WARN" = "true" ]; then
++      if [ $(ls -a "$ROOT/$DIR" | wc -l) -eq 2 ]; then
++        echo "  --> Deleting empty directory $ROOT/$DIR"
++        rmdir "$ROOT/$DIR"
++      else
++        echo "WARNING: Unique directory $ROOT/$DIR contains new files"
++      fi
++    else
++     echo "  --> $ROOT/$DIR (dir) would be deleted if empty"
++    fi
++  fi
++ done
++}
++
++delete_cats() {
++ sed -n 's,/man\(./[^/]*$\),/cat\1,p'  | \
++ while read FILE ; do
++   if [ -f "$ROOT/$FILE" ]; then
++     if [ ! "$WARN" = "true" ]; then
++       echo "  --> Deleting $ROOT/$FILE (fmt man page)"
++       rm -f $ROOT/$FILE
++     else
++       echo "  --> $ROOT/$FILE (fmt man page) would be deleted"
++     fi
++   fi
++ done
++}
++
++package_name() {
++  STRING=$(pkgbase $1 | sed 's?-[^-]*-[^-]*-[^-]*$??')
++  # If we don't do this, commands run later will take the '-' to be an option
++  # and will destroy the package database.  Packages should not contain spaces
++  # in them.  Normally this type of problem results from a command line typo.
++  if [ "$(echo $STRING | cut -b 1)" = "-" ]; then
++    STRING="malformed-package-name-detected"
++  fi
++  echo $STRING
++}
++
++# Conversion to 'comm' utility by Mark Wisdom.
++# is pretty nifty! :^)
++remove_packages() {
++ for PKGLIST in $* 
++ do
++  PKGNAME=$(pkgbase $PKGLIST)
++  echo
++  # If we don't have a package match here, then we will attempt to find
++  # a package using the long name format (name-version-arch-build) for
++  # which the base package name was given.  On a properly-managed machine,
++  # there should only be one package installed with a given basename, but
++  # we don't enforce this policy.  If there's more than one, only one will
++  # be removed.  If you want to remove them all, you'll need to run
++  # removepkg again until it removes all the same-named packages.
++  if [ ! -e $ADM_DIR/packages/$PKGNAME ]; then
++   SHORT="$(package_name $PKGNAME)"
++   for long_package in $ADM_DIR/packages/${PKGNAME}* ; do
++    if [ "$SHORT" = "$(package_name $long_package)" ]; then
++     PKGNAME="$(basename $long_package)"
++    fi
++   done
++  fi
++
++  if [ ! -e $ADM_DIR/packages/$PKGNAME ]; then
++    long_package=$(ls -1 $ADM_DIR/packages/${PKGNAME}* | grep -m 1 "^${PKGNAME}-[^-]*-[^-]*-[^-]*$")
++    if [ -e "$long_package" ]; then
++      PKGNAME=$(basename $long_package)
++    fi
++  fi
++
++  if [ -r $ADM_DIR/packages/$PKGNAME ]; then
++   if [ ! "$WARN" = true ]; then
++    echo "Removing package $ADM_DIR/packages/$PKGNAME..."
++   fi
++   if fgrep "./" $ADM_DIR/packages/$PKGNAME 1> /dev/null 2>&1; then
++    TRIGGER="^\.\/"
++   else
++    TRIGGER="FILE LIST:"
++   fi
++   if [ ! "$WARN" = true ]; then
++    echo "Removing files:"
++   fi
++   sed -n "/$TRIGGER/,/^$/p" < $ADM_DIR/packages/$PKGNAME | \
++    fgrep -v "FILE LIST:" | sort -u > $TMP/delete_list$$
++   # Pat's new-new && improved pre-removal routine.
++   cat_except $ADM_DIR/packages $PKGNAME | sort -u > $TMP/required_list$$
++   if [ -r $ADM_DIR/scripts/$PKGNAME ]; then
++    extract_links < $ADM_DIR/scripts/$PKGNAME | sort -u > $TMP/del_link_list$$
++    cat_except $ADM_DIR/scripts $PKGNAME | extract_links | \
++     sort -u > $TMP/required_links$$
++    mv $TMP/required_list$$ $TMP/required_files$$
++    sort -u $TMP/required_links$$ $TMP/required_files$$ > $TMP/required_list$$
++    comm -12 $TMP/del_link_list$$ $TMP/required_list$$ | keep_links
++    comm -23 $TMP/del_link_list$$ $TMP/required_list$$ | delete_links
++   else
++    cat $ADM_DIR/scripts/* | extract_links | \
++     sort -u > $TMP/required_links$$
++    mv $TMP/required_list$$ $TMP/required_files$$
++    sort -u $TMP/required_links$$ $TMP/required_files$$ >$TMP/required_list$$
++   fi
++   comm -12 $TMP/delete_list$$ $TMP/required_list$$ | keep_files
++   comm -23 $TMP/delete_list$$ $TMP/required_list$$ > $TMP/uniq_list$$
++   delete_files < $TMP/uniq_list$$
++   delete_dirs < $TMP/uniq_list$$
++   delete_cats < $TMP/uniq_list$$
++   if [ ! "$KEEP" = "true" ]; then
++    rm -f $TMP/delete_list$$ $TMP/required_files$$ $TMP/uniq_list$$
++    rm -f $TMP/del_link_list$$ $TMP/required_links$$ $TMP/required_list$$
++   fi
++   if [ "$PRESERVE" = "true" ]; then
++    if [ -r $ADM_DIR/scripts/$PKGNAME ]; then
++     if [ ! -d "$PRES_DIR/$PKGNAME/install" ]; then
++      mkdir -p "$PRES_DIR/$PKGNAME/install"
++     fi
++     cp -p $ADM_DIR/scripts/$PKGNAME $PRES_DIR/$PKGNAME/install/doinst.sh
++    fi
++   fi
++   if [ ! "$WARN" = "true" ]; then
++    for DIR in $ADM_DIR/removed_packages $ADM_DIR/removed_scripts ; do
++     if [ ! -d $DIR ] ; then mkdir -p $DIR ; chmod 755 $DIR ; fi
++    done
++    mv $ADM_DIR/packages/$PKGNAME $ADM_DIR/removed_packages
++    if [ -r $ADM_DIR/scripts/$PKGNAME ]; then
++     mv $ADM_DIR/scripts/$PKGNAME $ADM_DIR/removed_scripts
++    fi
++   fi
++  else
++   echo "No such package: $ADM_DIR/packages/$PKGNAME. Can't remove."
++  fi
++ done
++}
++
++if [ "$#" = "0" ]; then
++  echo "Usage: $(basename $0) [-copy] [-keep] [-preserve] [-warn] packagename ..."; exit 1
++fi
++
++while : ; do
++ case "$1" in
++  -copy | --copy) WARN=true; PRESERVE=true; shift;;
++  -keep | --keep) KEEP=true; shift;;
++  -preserve | --preserve) PRESERVE=true; shift;;
++  -warn | --warn) WARN=true; shift;;
++  -* | --*) echo "Usage: $(basename $0) [-copy] [-keep] [-preserve] [-warn] packagename ..."; exit 1;;
++  *) break
++ esac
++done
++
++if [ "$WARN" = "true" ]; then
++ echo "Only warning... not actually removing any files."
++ if [ "$PRESERVE" = "true" ]; then
++  echo "Package contents is copied to $PRES_DIR."
++ fi
++ echo "Here's what would be removed (and left behind) if you"
++ echo "removed the package(s):"
++ echo
++else
++ if [ "$PRESERVE" = "true" ]; then
++  echo "Package contents is copied to $PRES_DIR."
++ fi
++fi
++
++remove_packages $*
++
+diff -ruN sbotools-2.0-orig/pkg_in sbotools-2.0/pkg_in
+--- sbotools-2.0-orig/pkg_in	1970-01-01 01:00:00.000000000 +0100
++++ sbotools-2.0/pkg_in	2016-08-28 00:24:20.159302114 +0200
+@@ -0,0 +1,520 @@
++#!/bin/sh
++# Copyright 1994, 1998, 2000  Patrick Volkerding, Concord, CA, USA 
++# Copyright 2001, 2003  Slackware Linux, Inc., Concord, CA, USA
++# Copyright 2007, 2009, 2011  Patrick Volkerding, Sebeka, MN, USA 
++# All rights reserved.
++#
++# Redistribution and use of this script, with or without modification, is
++# permitted provided that the following conditions are met:
++#
++# 1. Redistributions of this script must retain the above copyright
++#    notice, this list of conditions and the following disclaimer.
++#
++#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
++#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
++#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
++#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
++#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
++#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
++#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
++#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++#
++# Wed Aug 27 00:23 CEST 2016
++# Changed $ADM_DIR to /usr/local/var/log
++
++# A stronger formula is needed to regularize output that will be parsed.
++unset LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY \
++  LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT \
++  LC_IDENTIFICATION LC_ALL
++LANG=C
++export LANG
++
++# Return a package name that has been stripped of the dirname portion
++# and any of the valid extensions (only):
++pkgbase() {
++  # basename + strip extensions .tbz, .tgz, .tlz and .txz
++  echo "$1" | sed 's?.*/??;s/\.t[bglx]z$//'
++}
++
++# If installpkg encounters a problem, it will return a non-zero error code.
++# If it finds more than one problem (i.e. with a list of packages) you'll only
++# hear about the most recent one. :)
++# 1 = tar returned error code
++# 2 = corrupt compression envelope
++# 3 = does not end in .tgz
++# 4 = no such file
++# 5 = external compression utility missing
++# 99 = user abort from menu mode
++EXITSTATUS=0
++
++# Do not store md5sums by default:
++MD5SUM=0
++
++# So that we know what to expect...
++umask 022
++TAR=tar-1.13
++$TAR --help 1> /dev/null 2> /dev/null
++if [ ! $? = 0 ]; then
++  TAR=tar
++fi
++if [ ! "$(LC_MESSAGES=C $TAR --version)" = "tar (GNU tar) 1.13
++
++Copyright (C) 1988, 92,93,94,95,96,97,98, 1999 Free Software Foundation, Inc.
++This is free software; see the source for copying conditions.  There is NO
++warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++
++Written by John Gilmore and Jay Fenlason." ]; then
++  echo "WARNING: pkgtools are unstable with tar > 1.13."
++  echo "         You should provide a \"tar-1.13\" in your \$PATH."
++  sleep 5
++fi
++
++usage() {
++ cat << EOF
++Usage: installpkg [options] <package_filename>
++
++Installpkg is used to install a .t{gz,bz,lz,xz} package like this:
++   installpkg slackware-package-1.0.0-i486-1.tgz (or .tbz, .tlz, .txz)
++
++options:      --warn (warn if files will be overwritten, but do not install)
++              --root /mnt (install someplace else, like /mnt)
++              --infobox (use dialog to draw an info box)
++              --terse (display a one-line short description for install)
++              --menu (confirm package installation with a menu, unless
++                    the priority is [required] or ADD)
++              --ask (used with menu mode: always ask if a package should be
++                   installed regardless of what the package's priority is)
++              --priority ADD|REC|OPT|SKP  (provide a priority for the entire
++                    package list to use instead of the priority in the
++                    tagfile)
++              --tagfile /somedir/tagfile (specify a different file to use
++                    for package priorities.  The default is "tagfile" in
++                    the package's directory)
++              --md5sum (record the package's md5sum in the metadata file)
++
++EOF
++}
++
++# Eliminate whitespace function:
++crunch() {
++  while read FOO ; do
++    echo $FOO
++  done
++}
++
++# Strip version, architecture and build from the end of the name
++package_name() {
++  pkgbase $1 | sed 's?-[^-]*-[^-]*-[^-]*$??'
++}
++
++# Parse options:
++MODE=install # standard text-mode
++while [ 0 ]; do
++  if [ "$1" = "-warn" -o "$1" = "--warn" ]; then
++    MODE=warn
++    shift 1
++  elif [ "$1" = "-md5sum" -o "$1" = "--md5sum" ]; then
++    MD5SUM=1
++    shift 1
++  elif [ "$1" = "-infobox" -o "$1" = "--infobox" ]; then
++    MODE=infobox
++    shift 1
++  elif [ "$1" = "-terse" -o "$1" = "--terse" ]; then
++    MODE=terse
++    shift 1
++  elif [ "$1" = "-menu" -o "$1" = "--menu" ]; then
++    MODE=menu
++    shift 1
++  elif [ "$1" = "-ask" -o "$1" = "--ask" ]; then
++    ALWAYSASK="yes"
++    shift 1
++  elif [ "$1" = "-tagfile" -o "$1" = "--tagfile" ]; then
++    if [ -r "$2" ]; then
++      USERTAGFILE="$2"
++    elif [ -r "$(pwd)/$2" ]; then
++      USERTAGFILE="$(pwd)/$2"
++    else
++      usage
++      exit
++    fi
++    shift 2
++  elif [ "$1" = "-priority" -o "$1" = "--priority" ]; then
++    if [ "$2" = "" ]; then
++      usage
++      exit
++    fi
++    USERPRIORITY="$2"
++    shift 2
++  elif [ "$1" = "-root" -o "$1" = "--root" ]; then
++    if [ "$2" = "" ]; then
++      usage
++      exit
++    fi
++    ROOT="$2"
++    shift 2
++  else
++    break
++  fi
++done
++
++# Set the prefix for the package database directories (packages, scripts).
++ADM_DIR="$ROOT/usr/local/var/log"
++# If the directories don't exist, "initialize" the package database:
++for PKGDBDIR in packages removed_packages removed_scripts scripts setup ; do
++  if [ ! -d $ADM_DIR/$PKGDBDIR ]; then
++    rm -rf $ADM_DIR/$PKGDBDIR # make sure it's not a symlink or something stupid
++    mkdir -p $ADM_DIR/$PKGDBDIR
++    chmod 755 $ADM_DIR/$PKGDBDIR 
++  fi
++done
++
++# Make sure there's a proper temp directory:
++TMP=$ADM_DIR/setup/tmp
++# If the $TMP directory doesn't exist, create it:
++if [ ! -d $TMP ]; then
++  rm -rf $TMP # make sure it's not a symlink or something stupid
++  mkdir -p $TMP
++  chmod 700 $TMP # no need to leave it open
++fi
++
++# usage(), exit if called with no arguments:
++if [ $# = 0 ]; then
++  usage;
++  exit
++fi
++
++# If -warn mode was requested, produce the output and then exit:
++if [ "$MODE" = "warn" ]; then
++  while [ -f "$1" ]; do
++    mkdir -p $TMP/scan$$
++    # Determine extension:
++    packageext="$( echo $1 | rev | cut -f 1 -d . | rev)"
++    # Determine compressor utility:
++    case $packageext in
++    'tgz' )
++      packagecompression=gzip
++      ;;
++    'tbz' )
++      packagecompression=bzip2
++      ;;
++    'tlz' )
++      packagecompression=lzma
++      ;;
++    'txz' )
++      packagecompression=xz
++      ;;
++    esac
++    ( cd $TMP/scan$$ ; $packagecompression -dc | $TAR xf - install ) < $1 2> /dev/null 
++    if [ -r $TMP/scan$$/install/doinst.sh ]; then
++      if grep ' rm -rf ' $TMP/scan$$/install/doinst.sh 1>/dev/null 2>/dev/null ; then
++        grep ' rm -rf ' $TMP/scan$$/install/doinst.sh > $TMP/scan$$/install/delete
++	for f in `cat $TMP/scan$$/install/delete | cut -f 3,7 -d ' ' | tr ' ' '/'`; do
++	  f="/$f"
++	  if [ -f "$f" -o -L "$f" ]; then
++	    echo "$f"
++	  fi
++	done
++      fi
++      if [ -d $TMP/scan$$ ]; then
++        ( cd $TMP/scan$$ ; rm -rf install ) 2> /dev/null
++        ( cd $TMP ; rmdir scan$$ ) 2> /dev/null
++      fi
++    fi
++    for f in `( $packagecompression -dc | $TAR tf - ) < $1 | grep -v 'drwx'`; do
++      f="/$f"
++      if [ -f "$f" -o -L "$f" ]; then
++        echo "$f"
++      fi
++    done
++    shift 1
++  done
++  exit
++fi
++
++# Main loop:
++for package in $* ; do
++
++  # Simple package integrity check:
++  if [ ! -f $package ]; then
++    EXITSTATUS=4
++    if [ "$MODE" = "install" ]; then
++      echo "Cannot install $package:  file not found"
++    fi
++    continue;
++  fi
++
++  # "shortname" isn't really THAT short...
++  # it's just the full name without ".t{gz,bz,lz,xz}"
++  shortname="$(pkgbase $package)"
++  packagedir="$(dirname $package)"
++  # This is the base package name, used for grepping tagfiles and descriptions:
++  packagebase="$(package_name $shortname)"
++
++  # Reject package if it does not end in '.t{gz,bz,lz,xz}':
++  if [ "$shortname" = "$(basename $package)" ]; then
++    EXITSTATUS=3
++    if [ "$MODE" = "install" ]; then
++      echo "Cannot install $package:  file does not end in .tgz, .tbz, .tlz, or .txz"
++    fi
++    continue;
++  fi
++
++  # Determine extension:
++  packageext="$(echo $package | rev | cut -f 1 -d . | rev)"
++
++  # Determine compressor utility:
++  case $packageext in
++  'tgz' )
++    packagecompression=gzip
++    ;;
++  'tbz' )
++    packagecompression=bzip2
++    ;;
++  'tlz' )
++    packagecompression=lzma
++    ;;
++  'txz' )
++    packagecompression=xz
++    ;;
++  esac
++
++  # Test presence of external compression utility:
++  if ! $packagecompression --help 1> /dev/null 2> /dev/null ; then
++    EXITSTATUS=5
++    if [ "$MODE" = "install" ]; then
++      echo "Cannot install $package:  external compression utility $packagecompression missing"
++    fi
++    continue;
++  fi
++
++  # Determine package's priority:
++  unset PRIORITY
++  if [ "$USERTAGFILE" = "" ]; then
++    TAGFILE="$packagedir/tagfile"   
++  else
++    TAGFILE="$USERTAGFILE"
++  fi
++  if [ ! -r "$TAGFILE" ]; then
++    TAGFILE=/dev/null
++  fi
++  if grep "^$packagebase:" "$TAGFILE" | grep ADD > /dev/null 2> /dev/null ; then
++    PRIORITY="ADD"
++  elif grep "^$packagebase:" "$TAGFILE" | grep REC > /dev/null 2> /dev/null ; then
++    PRIORITY="REC"
++  elif grep "^$packagebase:" "$TAGFILE" | grep OPT > /dev/null 2> /dev/null ; then
++    PRIORITY="OPT"
++  elif grep "^$packagebase:" "$TAGFILE" | grep SKP > /dev/null 2> /dev/null ; then
++    PRIORITY="SKP"
++  fi
++  if [ "$PRIORITY" = "ADD" ]; then
++    PMSG="[ADD]"
++  elif [ "$PRIORITY" = "REC" ]; then
++    PMSG="[REC]"
++  elif [ "$PRIORITY" = "OPT" ]; then
++    PMSG="[OPT]"
++  elif [ "$PRIORITY" = "SKP" ]; then
++    PMSG="[SKP]"
++  else
++    PMSG=""
++  fi
++
++  # If a tagfile wants this package to be skipped, do that now before
++  # wasting any more CPU on it:
++  if [ "$PRIORITY" = "SKP" -a ! "$ALWAYSASK" = "yes" ]; then
++    continue # next package
++  fi
++
++  # Figure out some package information, like the compressed and uncompressed
++  # sizes, and where to find the package description:
++  COMPRESSED="$(/bin/du -sh "$(readlink -f $package)" | cut -f 1)"
++  DESCRIPTION=""
++  # First check for .txt file next to the package, since this is faster:
++  if grep "^$packagebase:" "$packagedir/$shortname.txt" 1> /dev/null 2> /dev/null ; then
++    DESCRIPTION="$packagedir/$shortname.txt"
++  elif grep "^$shortname:" "$packagedir/$shortname.txt" 1> /dev/null 2> /dev/null ; then
++    DESCRIPTION="$packagedir/$shortname.txt"
++  fi
++
++  # Test tarball integrity and get uncompressed package size:
++  if [ "$MODE" = "install" ]; then
++    echo "Verifying package $(basename $package)."
++  fi
++  cat $package | $packagecompression -dc | dd 2> $TMP/tmpsize$$ | $TAR tf - 1> $TMP/tmplist$$ 2> /dev/null
++  TARERROR=$?
++  if [ ! "$TARERROR" = "0" ]; then
++    EXITSTATUS=1 # tar file corrupt
++    if [ "$MODE" = "install" ]; then
++      echo "Unable to install $package:  tar archive is corrupt (tar returned error code $TARERROR)"
++    fi
++    rm -f $TMP/tmplist$$ $TMP/tmpsize$$
++    continue
++  fi
++  UNCOMPRESSED="$(cat $TMP/tmpsize$$ | tail -n 1 | cut -f 1 -d ' ' | numfmt --to=iec)"
++  rm -f $TMP/tmpsize$$
++
++  # If we still don't have a package description, look inside the package.
++  # This requires a costly untar.
++  if [ "$DESCRIPTION" = "" ]; then
++    mkdir -p $TMP/scan$$
++    ( cd $TMP/scan$$ ; $packagecompression -dc | $TAR xf - install ) < $package 2> /dev/null
++    if grep "^$packagebase:" "$TMP/scan$$/install/slack-desc" 1> /dev/null 2> /dev/null ; then
++      DESCRIPTION="$TMP/scan$$/install/slack-desc"
++    elif grep "^$shortname:" "$TMP/scan$$/install/slack-desc" 1> /dev/null 2> /dev/null ; then
++      DESCRIPTION="$TMP/scan$$/install/slack-desc"
++    fi
++  fi
++
++  if [ "$DESCRIPTION" = "" ]; then
++    #echo "WARNING NO SLACK-DESC"
++    DESCRIPTION="/dev/null"
++  fi
++
++  # Gather package infomation into a temporary file:
++  grep "^$packagebase:" $DESCRIPTION | cut -f 2- -d : | cut -b2- 1> $TMP/tmpmsg$$ 2> /dev/null
++  if [ "$shortname" != "$packagebase" ]; then
++    grep "^$shortname:" $DESCRIPTION | cut -f 2- -d : | cut -b2- 1>> $TMP/tmpmsg$$ 2> /dev/null
++  fi
++  # Adjust the length here.  This allows a slack-desc to be any size up to 13 lines instead of fixed at 11.
++  LENGTH=$(wc -l < $TMP/tmpmsg$$ )
++  while [ $LENGTH -lt 12 ]; do
++    echo >> $TMP/tmpmsg$$
++    LENGTH=$(expr $LENGTH + 1)
++  done
++  echo "Size: Compressed: ${COMPRESSED}, uncompressed: ${UNCOMPRESSED}." >> $TMP/tmpmsg$$
++  # For recent versions of dialog it is necessary to add \n to the end of each line
++  # or it will remove repeating spaces and mess up our careful formatting:
++  cat << EOF > $TMP/controlns$$
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++EOF
++  paste -d "" $TMP/tmpmsg$$ $TMP/controlns$$ > $TMP/pasted$$
++  rm -f $TMP/controlns$$
++  mv $TMP/pasted$$ $TMP/tmpmsg$$
++  # Emit information to the console:
++  if [ "$MODE" = "install" ]; then
++    if [ "$PMSG" = "" ]; then
++      echo "Installing package $(basename $package):"
++    else
++      echo "Installing package $(basename $package) $PMSG:"
++    fi
++    echo "PACKAGE DESCRIPTION:"
++    grep "^$packagebase:" $DESCRIPTION | uniq | sed "s/^$packagebase:/#/g"
++    if [ "$shortname" != "$packagebase" ]; then
++      grep "^$shortname:" $DESCRIPTION | uniq | sed "s/^$shortname:/#/g"
++    fi
++  elif [ "$MODE" = "terse" ]; then # emit a single description line
++    printf "%-72s %-6s\n" "$(echo $shortname: $(echo $(cat $DESCRIPTION | grep "^$packagebase:" | sed "s/^$packagebase: //g" | head -n 1 | tr -d '()' | sed "s/^$packagebase //g" ) $(echo " ......................................................................")) | cut -b1-72)" "[${UNCOMPRESSED}]" | cut -b1-80
++  elif [ "$MODE" = "infobox" ]; then # install infobox package
++    dialog --title "Installing package $shortname $PMSG" --infobox "$(cat $TMP/tmpmsg$$)" 0 0
++  elif [ "$MODE" = "menu" -a "$PRIORITY" = "ADD" -a ! "$ALWAYSASK" = "yes" ]; then # ADD overrides menu mode unless -ask was used
++    dialog --title "Installing package $shortname $PMSG" --infobox "$(cat $TMP/tmpmsg$$)" 0 0
++  elif [ "$MODE" = "menu" -a "$USERPRIORITY" = "ADD" ]; then # install no matter what $PRIORITY
++    dialog --title "Installing package $shortname $PMSG" --infobox "$(cat $TMP/tmpmsg$$)" 0 0
++  else # we must need a full menu:
++    dialog --title "Package Name: $shortname $PMSG" --menu "$(cat $TMP/tmpmsg$$)" 0 0 3 \
++    "Yes" "Install package $shortname" \
++    "No" "Do not install package $shortname" \
++    "Quit" "Abort software installation completely" 2> $TMP/reply$$
++    if [ ! $? = 0 ]; then
++      echo "No" > $TMP/reply$$
++    fi
++    REPLY="$(cat $TMP/reply$$)"
++    rm -f $TMP/reply$$ $TMP/tmpmsg$$
++    if [ "$REPLY" = "Quit" ]; then
++      exit 99 # EXIT STATUS 99 = ABORT!
++    elif [ "$REPLY" = "No" ]; then
++      continue # skip the package
++    fi
++  fi
++
++  # Make sure there are no symbolic links sitting in the way of
++  # incoming package files:
++    grep -v "/$" $TMP/tmplist$$ | while read file ; do
++    if [ -L "$ROOT/$file" ]; then
++      rm -f "$ROOT/$file"
++    fi
++  done
++  rm -f $TMP/tmplist$$
++
++  # Write the package file database entry and install the package:
++  echo "PACKAGE NAME:     $shortname" > $ADM_DIR/packages/$shortname
++  echo "COMPRESSED PACKAGE SIZE:     $COMPRESSED" >> $ADM_DIR/packages/$shortname
++  echo "UNCOMPRESSED PACKAGE SIZE:     $UNCOMPRESSED" >> $ADM_DIR/packages/$shortname
++  echo "PACKAGE LOCATION: $package" >> $ADM_DIR/packages/$shortname
++  # Record the md5sum if that's a selected option:
++  if [ $MD5SUM = 1 ]; then
++    echo "PACKAGE MD5SUM: $(md5sum $package | cut -f 1 -d ' ')" >> $ADM_DIR/packages/$shortname
++  fi
++  echo "PACKAGE DESCRIPTION:" >> $ADM_DIR/packages/$shortname
++  grep "^$packagebase:" $DESCRIPTION >> $ADM_DIR/packages/$shortname 2> /dev/null
++  if [ "$shortname" != "$packagebase" ]; then
++    grep "^$shortname:" $DESCRIPTION >> $ADM_DIR/packages/$shortname 2> /dev/null
++  fi
++  echo "FILE LIST:" >> $ADM_DIR/packages/$shortname
++  ( cd $ROOT/ ; $packagecompression -dc | $TAR -xlUpvf - | sort ) < $package >> $TMP/$shortname 2> /dev/null
++  if [ "$( grep '^\./' $TMP/$shortname | wc -l | tr -d ' ')" = "1" ]; then
++    # Good.  We have a package that meets the Slackware spec.
++    cat $TMP/$shortname >> $ADM_DIR/packages/$shortname
++  else
++    # Some dumb bunny built a package with something other than makepkg.  Bad!
++    # Oh well.  Bound to happen.  Par for the course.  Fix it and move on...
++    echo "WARNING:  Package has not been created with 'makepkg'"
++    echo './' >> $ADM_DIR/packages/$shortname
++    cat $TMP/$shortname >> $ADM_DIR/packages/$shortname
++  fi
++  rm -f $TMP/$shortname
++
++  # It's a good idea to make sure those newly installed libraries
++  # are properly activated for use:
++  if [ -x /sbin/ldconfig ]; then
++    /sbin/ldconfig
++  fi
++
++  if [ -f $ROOT/install/doinst.sh ]; then
++    if [ "$MODE" = "install" ]; then
++      echo "Executing install script for $(basename $package)."
++    fi
++    # If bash is available, use sed to convert the install script to use pushd/popd
++    # rather than spawning subshells which is slow on ARM.  This will also speed up
++    # install script processing on any platform.
++    if [ -x /bin/bash ]; then
++      ( cd $ROOT/ ; sed -e's?^( cd \([^;]*\);\(.*\) )$?pushd \1 \&\> /dev/null ; \2 ; popd \&\> /dev/null?g ' install/doinst.sh | /bin/bash ; )
++    else
++      ( cd $ROOT/ ; sh install/doinst.sh ; )
++    fi
++  fi 
++  # Clean up the mess...
++  if [ -d $ROOT/install ]; then
++    if [ -r $ROOT/install/doinst.sh ]; then
++      cp $ROOT/install/doinst.sh $ADM_DIR/scripts/$shortname
++      chmod 755 $ADM_DIR/scripts/$shortname
++    fi
++    # /install/doinst.sh and /install/slack-* are reserved locations for the package system.
++    ( cd $ROOT/install ; rm -f doinst.sh slack-* 1> /dev/null 2>&1 )
++    rmdir $ROOT/install 1> /dev/null 2>&1
++  fi
++  # If we used a scan directory, get rid of it:
++  if [ -d "$TMP/scan$$" ]; then
++    rm -rf "$TMP/scan$$"
++  fi
++  rm -f $TMP/tmpmsg$$ $TMP/reply$$
++  if [ "$MODE" = "install" ]; then
++    echo "Package $(basename $package) installed."
++    echo
++  fi
++done
++
++exit $EXITSTATUS
+diff -ruN sbotools-2.0-orig/pkg_info sbotools-2.0/pkg_info
+--- sbotools-2.0-orig/pkg_info	1970-01-01 01:00:00.000000000 +0100
++++ sbotools-2.0/pkg_info	2016-08-28 00:34:23.434200375 +0200
+@@ -0,0 +1,521 @@
++#!/bin/sh
++# Copyright 1994, 1998, 2000  Patrick Volkerding, Concord, CA, USA 
++# Copyright 2001, 2003  Slackware Linux, Inc., Concord, CA, USA
++# Copyright 2007, 2009, 2011  Patrick Volkerding, Sebeka, MN, USA 
++# All rights reserved.
++#
++# Redistribution and use of this script, with or without modification, is
++# permitted provided that the following conditions are met:
++#
++# 1. Redistributions of this script must retain the above copyright
++#    notice, this list of conditions and the following disclaimer.
++#
++#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
++#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
++#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
++#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
++#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
++#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
++#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
++#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++#
++# Wed Aug 27 00:24 CEST 2016
++# Changed $ADM_DIR to /usr/local
++# pkg_info will be replaced with a simpler and less clumsy tool very soon.
++
++# A stronger formula is needed to regularize output that will be parsed.
++unset LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY \
++  LC_MESSAGES LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT \
++  LC_IDENTIFICATION LC_ALL
++LANG=C
++export LANG
++
++# Return a package name that has been stripped of the dirname portion
++# and any of the valid extensions (only):
++pkgbase() {
++  # basename + strip extensions .tbz, .tgz, .tlz and .txz
++  echo "$1" | sed 's?.*/??;s/\.t[bglx]z$//'
++}
++
++# If installpkg encounters a problem, it will return a non-zero error code.
++# If it finds more than one problem (i.e. with a list of packages) you'll only
++# hear about the most recent one. :)
++# 1 = tar returned error code
++# 2 = corrupt compression envelope
++# 3 = does not end in .tgz
++# 4 = no such file
++# 5 = external compression utility missing
++# 99 = user abort from menu mode
++EXITSTATUS=0
++
++# Do not store md5sums by default:
++MD5SUM=0
++
++# So that we know what to expect...
++umask 022
++TAR=tar-1.13
++$TAR --help 1> /dev/null 2> /dev/null
++if [ ! $? = 0 ]; then
++  TAR=tar
++fi
++if [ ! "$(LC_MESSAGES=C $TAR --version)" = "tar (GNU tar) 1.13
++
++Copyright (C) 1988, 92,93,94,95,96,97,98, 1999 Free Software Foundation, Inc.
++This is free software; see the source for copying conditions.  There is NO
++warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++
++Written by John Gilmore and Jay Fenlason." ]; then
++  echo "WARNING: pkgtools are unstable with tar > 1.13."
++  echo "         You should provide a \"tar-1.13\" in your \$PATH."
++  sleep 5
++fi
++
++usage() {
++ cat << EOF
++Usage: installpkg [options] <package_filename>
++
++Installpkg is used to install a .t{gz,bz,lz,xz} package like this:
++   installpkg slackware-package-1.0.0-i486-1.tgz (or .tbz, .tlz, .txz)
++
++options:      --warn (warn if files will be overwritten, but do not install)
++              --root /mnt (install someplace else, like /mnt)
++              --infobox (use dialog to draw an info box)
++              --terse (display a one-line short description for install)
++              --menu (confirm package installation with a menu, unless
++                    the priority is [required] or ADD)
++              --ask (used with menu mode: always ask if a package should be
++                   installed regardless of what the package's priority is)
++              --priority ADD|REC|OPT|SKP  (provide a priority for the entire
++                    package list to use instead of the priority in the
++                    tagfile)
++              --tagfile /somedir/tagfile (specify a different file to use
++                    for package priorities.  The default is "tagfile" in
++                    the package's directory)
++              --md5sum (record the package's md5sum in the metadata file)
++
++EOF
++}
++
++# Eliminate whitespace function:
++crunch() {
++  while read FOO ; do
++    echo $FOO
++  done
++}
++
++# Strip version, architecture and build from the end of the name
++package_name() {
++  pkgbase $1 | sed 's?-[^-]*-[^-]*-[^-]*$??'
++}
++
++# Parse options:
++MODE=install # standard text-mode
++while [ 0 ]; do
++  if [ "$1" = "-warn" -o "$1" = "--warn" ]; then
++    MODE=warn
++    shift 1
++  elif [ "$1" = "-md5sum" -o "$1" = "--md5sum" ]; then
++    MD5SUM=1
++    shift 1
++  elif [ "$1" = "-infobox" -o "$1" = "--infobox" ]; then
++    MODE=infobox
++    shift 1
++  elif [ "$1" = "-terse" -o "$1" = "--terse" ]; then
++    MODE=terse
++    shift 1
++  elif [ "$1" = "-menu" -o "$1" = "--menu" ]; then
++    MODE=menu
++    shift 1
++  elif [ "$1" = "-ask" -o "$1" = "--ask" ]; then
++    ALWAYSASK="yes"
++    shift 1
++  elif [ "$1" = "-tagfile" -o "$1" = "--tagfile" ]; then
++    if [ -r "$2" ]; then
++      USERTAGFILE="$2"
++    elif [ -r "$(pwd)/$2" ]; then
++      USERTAGFILE="$(pwd)/$2"
++    else
++      usage
++      exit
++    fi
++    shift 2
++  elif [ "$1" = "-priority" -o "$1" = "--priority" ]; then
++    if [ "$2" = "" ]; then
++      usage
++      exit
++    fi
++    USERPRIORITY="$2"
++    shift 2
++  elif [ "$1" = "-root" -o "$1" = "--root" ]; then
++    if [ "$2" = "" ]; then
++      usage
++      exit
++    fi
++    ROOT="$2"
++    shift 2
++  else
++    break
++  fi
++done
++
++# Set the prefix for the package database directories (packages, scripts).
++ADM_DIR="$ROOT/usr/local/var/log"
++# If the directories don't exist, "initialize" the package database:
++for PKGDBDIR in packages removed_packages removed_scripts scripts setup ; do
++  if [ ! -d $ADM_DIR/$PKGDBDIR ]; then
++    rm -rf $ADM_DIR/$PKGDBDIR # make sure it's not a symlink or something stupid
++    mkdir -p $ADM_DIR/$PKGDBDIR
++    chmod 755 $ADM_DIR/$PKGDBDIR 
++  fi
++done
++
++# Make sure there's a proper temp directory:
++TMP=$ADM_DIR/setup/tmp
++# If the $TMP directory doesn't exist, create it:
++if [ ! -d $TMP ]; then
++  rm -rf $TMP # make sure it's not a symlink or something stupid
++  mkdir -p $TMP
++  chmod 700 $TMP # no need to leave it open
++fi
++
++# usage(), exit if called with no arguments:
++if [ $# = 0 ]; then
++  usage;
++  exit
++fi
++
++# If -warn mode was requested, produce the output and then exit:
++if [ "$MODE" = "warn" ]; then
++  while [ -f "$1" ]; do
++    mkdir -p $TMP/scan$$
++    # Determine extension:
++    packageext="$( echo $1 | rev | cut -f 1 -d . | rev)"
++    # Determine compressor utility:
++    case $packageext in
++    'tgz' )
++      packagecompression=gzip
++      ;;
++    'tbz' )
++      packagecompression=bzip2
++      ;;
++    'tlz' )
++      packagecompression=lzma
++      ;;
++    'txz' )
++      packagecompression=xz
++      ;;
++    esac
++    ( cd $TMP/scan$$ ; $packagecompression -dc | $TAR xf - install ) < $1 2> /dev/null 
++    if [ -r $TMP/scan$$/install/doinst.sh ]; then
++      if grep ' rm -rf ' $TMP/scan$$/install/doinst.sh 1>/dev/null 2>/dev/null ; then
++        grep ' rm -rf ' $TMP/scan$$/install/doinst.sh > $TMP/scan$$/install/delete
++	for f in `cat $TMP/scan$$/install/delete | cut -f 3,7 -d ' ' | tr ' ' '/'`; do
++	  f="/$f"
++	  if [ -f "$f" -o -L "$f" ]; then
++	    echo "$f"
++	  fi
++	done
++      fi
++      if [ -d $TMP/scan$$ ]; then
++        ( cd $TMP/scan$$ ; rm -rf install ) 2> /dev/null
++        ( cd $TMP ; rmdir scan$$ ) 2> /dev/null
++      fi
++    fi
++    for f in `( $packagecompression -dc | $TAR tf - ) < $1 | grep -v 'drwx'`; do
++      f="/$f"
++      if [ -f "$f" -o -L "$f" ]; then
++        echo "$f"
++      fi
++    done
++    shift 1
++  done
++  exit
++fi
++
++# Main loop:
++for package in $* ; do
++
++  # Simple package integrity check:
++  if [ ! -f $package ]; then
++    EXITSTATUS=4
++    if [ "$MODE" = "install" ]; then
++      echo "Cannot install $package:  file not found"
++    fi
++    continue;
++  fi
++
++  # "shortname" isn't really THAT short...
++  # it's just the full name without ".t{gz,bz,lz,xz}"
++  shortname="$(pkgbase $package)"
++  packagedir="$(dirname $package)"
++  # This is the base package name, used for grepping tagfiles and descriptions:
++  packagebase="$(package_name $shortname)"
++
++  # Reject package if it does not end in '.t{gz,bz,lz,xz}':
++  if [ "$shortname" = "$(basename $package)" ]; then
++    EXITSTATUS=3
++    if [ "$MODE" = "install" ]; then
++      echo "Cannot install $package:  file does not end in .tgz, .tbz, .tlz, or .txz"
++    fi
++    continue;
++  fi
++
++  # Determine extension:
++  packageext="$(echo $package | rev | cut -f 1 -d . | rev)"
++
++  # Determine compressor utility:
++  case $packageext in
++  'tgz' )
++    packagecompression=gzip
++    ;;
++  'tbz' )
++    packagecompression=bzip2
++    ;;
++  'tlz' )
++    packagecompression=lzma
++    ;;
++  'txz' )
++    packagecompression=xz
++    ;;
++  esac
++
++  # Test presence of external compression utility:
++  if ! $packagecompression --help 1> /dev/null 2> /dev/null ; then
++    EXITSTATUS=5
++    if [ "$MODE" = "install" ]; then
++      echo "Cannot install $package:  external compression utility $packagecompression missing"
++    fi
++    continue;
++  fi
++
++  # Determine package's priority:
++  unset PRIORITY
++  if [ "$USERTAGFILE" = "" ]; then
++    TAGFILE="$packagedir/tagfile"   
++  else
++    TAGFILE="$USERTAGFILE"
++  fi
++  if [ ! -r "$TAGFILE" ]; then
++    TAGFILE=/dev/null
++  fi
++  if grep "^$packagebase:" "$TAGFILE" | grep ADD > /dev/null 2> /dev/null ; then
++    PRIORITY="ADD"
++  elif grep "^$packagebase:" "$TAGFILE" | grep REC > /dev/null 2> /dev/null ; then
++    PRIORITY="REC"
++  elif grep "^$packagebase:" "$TAGFILE" | grep OPT > /dev/null 2> /dev/null ; then
++    PRIORITY="OPT"
++  elif grep "^$packagebase:" "$TAGFILE" | grep SKP > /dev/null 2> /dev/null ; then
++    PRIORITY="SKP"
++  fi
++  if [ "$PRIORITY" = "ADD" ]; then
++    PMSG="[ADD]"
++  elif [ "$PRIORITY" = "REC" ]; then
++    PMSG="[REC]"
++  elif [ "$PRIORITY" = "OPT" ]; then
++    PMSG="[OPT]"
++  elif [ "$PRIORITY" = "SKP" ]; then
++    PMSG="[SKP]"
++  else
++    PMSG=""
++  fi
++
++  # If a tagfile wants this package to be skipped, do that now before
++  # wasting any more CPU on it:
++  if [ "$PRIORITY" = "SKP" -a ! "$ALWAYSASK" = "yes" ]; then
++    continue # next package
++  fi
++
++  # Figure out some package information, like the compressed and uncompressed
++  # sizes, and where to find the package description:
++  COMPRESSED="$(/bin/du -sh "$(readlink -f $package)" | cut -f 1)"
++  DESCRIPTION=""
++  # First check for .txt file next to the package, since this is faster:
++  if grep "^$packagebase:" "$packagedir/$shortname.txt" 1> /dev/null 2> /dev/null ; then
++    DESCRIPTION="$packagedir/$shortname.txt"
++  elif grep "^$shortname:" "$packagedir/$shortname.txt" 1> /dev/null 2> /dev/null ; then
++    DESCRIPTION="$packagedir/$shortname.txt"
++  fi
++
++  # Test tarball integrity and get uncompressed package size:
++  if [ "$MODE" = "install" ]; then
++    echo "Verifying package $(basename $package)."
++  fi
++  cat $package | $packagecompression -dc | dd 2> $TMP/tmpsize$$ | $TAR tf - 1> $TMP/tmplist$$ 2> /dev/null
++  TARERROR=$?
++  if [ ! "$TARERROR" = "0" ]; then
++    EXITSTATUS=1 # tar file corrupt
++    if [ "$MODE" = "install" ]; then
++      echo "Unable to install $package:  tar archive is corrupt (tar returned error code $TARERROR)"
++    fi
++    rm -f $TMP/tmplist$$ $TMP/tmpsize$$
++    continue
++  fi
++  UNCOMPRESSED="$(cat $TMP/tmpsize$$ | tail -n 1 | cut -f 1 -d ' ' | numfmt --to=iec)"
++  rm -f $TMP/tmpsize$$
++
++  # If we still don't have a package description, look inside the package.
++  # This requires a costly untar.
++  if [ "$DESCRIPTION" = "" ]; then
++    mkdir -p $TMP/scan$$
++    ( cd $TMP/scan$$ ; $packagecompression -dc | $TAR xf - install ) < $package 2> /dev/null
++    if grep "^$packagebase:" "$TMP/scan$$/install/slack-desc" 1> /dev/null 2> /dev/null ; then
++      DESCRIPTION="$TMP/scan$$/install/slack-desc"
++    elif grep "^$shortname:" "$TMP/scan$$/install/slack-desc" 1> /dev/null 2> /dev/null ; then
++      DESCRIPTION="$TMP/scan$$/install/slack-desc"
++    fi
++  fi
++
++  if [ "$DESCRIPTION" = "" ]; then
++    #echo "WARNING NO SLACK-DESC"
++    DESCRIPTION="/dev/null"
++  fi
++
++  # Gather package infomation into a temporary file:
++  grep "^$packagebase:" $DESCRIPTION | cut -f 2- -d : | cut -b2- 1> $TMP/tmpmsg$$ 2> /dev/null
++  if [ "$shortname" != "$packagebase" ]; then
++    grep "^$shortname:" $DESCRIPTION | cut -f 2- -d : | cut -b2- 1>> $TMP/tmpmsg$$ 2> /dev/null
++  fi
++  # Adjust the length here.  This allows a slack-desc to be any size up to 13 lines instead of fixed at 11.
++  LENGTH=$(wc -l < $TMP/tmpmsg$$ )
++  while [ $LENGTH -lt 12 ]; do
++    echo >> $TMP/tmpmsg$$
++    LENGTH=$(expr $LENGTH + 1)
++  done
++  echo "Size: Compressed: ${COMPRESSED}, uncompressed: ${UNCOMPRESSED}." >> $TMP/tmpmsg$$
++  # For recent versions of dialog it is necessary to add \n to the end of each line
++  # or it will remove repeating spaces and mess up our careful formatting:
++  cat << EOF > $TMP/controlns$$
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++\n
++EOF
++  paste -d "" $TMP/tmpmsg$$ $TMP/controlns$$ > $TMP/pasted$$
++  rm -f $TMP/controlns$$
++  mv $TMP/pasted$$ $TMP/tmpmsg$$
++  # Emit information to the console:
++  if [ "$MODE" = "install" ]; then
++    if [ "$PMSG" = "" ]; then
++      echo "Installing package $(basename $package):"
++    else
++      echo "Installing package $(basename $package) $PMSG:"
++    fi
++    echo "PACKAGE DESCRIPTION:"
++    grep "^$packagebase:" $DESCRIPTION | uniq | sed "s/^$packagebase:/#/g"
++    if [ "$shortname" != "$packagebase" ]; then
++      grep "^$shortname:" $DESCRIPTION | uniq | sed "s/^$shortname:/#/g"
++    fi
++  elif [ "$MODE" = "terse" ]; then # emit a single description line
++    printf "%-72s %-6s\n" "$(echo $shortname: $(echo $(cat $DESCRIPTION | grep "^$packagebase:" | sed "s/^$packagebase: //g" | head -n 1 | tr -d '()' | sed "s/^$packagebase //g" ) $(echo " ......................................................................")) | cut -b1-72)" "[${UNCOMPRESSED}]" | cut -b1-80
++  elif [ "$MODE" = "infobox" ]; then # install infobox package
++    dialog --title "Installing package $shortname $PMSG" --infobox "$(cat $TMP/tmpmsg$$)" 0 0
++  elif [ "$MODE" = "menu" -a "$PRIORITY" = "ADD" -a ! "$ALWAYSASK" = "yes" ]; then # ADD overrides menu mode unless -ask was used
++    dialog --title "Installing package $shortname $PMSG" --infobox "$(cat $TMP/tmpmsg$$)" 0 0
++  elif [ "$MODE" = "menu" -a "$USERPRIORITY" = "ADD" ]; then # install no matter what $PRIORITY
++    dialog --title "Installing package $shortname $PMSG" --infobox "$(cat $TMP/tmpmsg$$)" 0 0
++  else # we must need a full menu:
++    dialog --title "Package Name: $shortname $PMSG" --menu "$(cat $TMP/tmpmsg$$)" 0 0 3 \
++    "Yes" "Install package $shortname" \
++    "No" "Do not install package $shortname" \
++    "Quit" "Abort software installation completely" 2> $TMP/reply$$
++    if [ ! $? = 0 ]; then
++      echo "No" > $TMP/reply$$
++    fi
++    REPLY="$(cat $TMP/reply$$)"
++    rm -f $TMP/reply$$ $TMP/tmpmsg$$
++    if [ "$REPLY" = "Quit" ]; then
++      exit 99 # EXIT STATUS 99 = ABORT!
++    elif [ "$REPLY" = "No" ]; then
++      continue # skip the package
++    fi
++  fi
++
++  # Make sure there are no symbolic links sitting in the way of
++  # incoming package files:
++    grep -v "/$" $TMP/tmplist$$ | while read file ; do
++    if [ -L "$ROOT/$file" ]; then
++      rm -f "$ROOT/$file"
++    fi
++  done
++  rm -f $TMP/tmplist$$
++
++  # Write the package file database entry and install the package:
++  echo "PACKAGE NAME:     $shortname" > $ADM_DIR/packages/$shortname
++  echo "COMPRESSED PACKAGE SIZE:     $COMPRESSED" >> $ADM_DIR/packages/$shortname
++  echo "UNCOMPRESSED PACKAGE SIZE:     $UNCOMPRESSED" >> $ADM_DIR/packages/$shortname
++  echo "PACKAGE LOCATION: $package" >> $ADM_DIR/packages/$shortname
++  # Record the md5sum if that's a selected option:
++  if [ $MD5SUM = 1 ]; then
++    echo "PACKAGE MD5SUM: $(md5sum $package | cut -f 1 -d ' ')" >> $ADM_DIR/packages/$shortname
++  fi
++  echo "PACKAGE DESCRIPTION:" >> $ADM_DIR/packages/$shortname
++  grep "^$packagebase:" $DESCRIPTION >> $ADM_DIR/packages/$shortname 2> /dev/null
++  if [ "$shortname" != "$packagebase" ]; then
++    grep "^$shortname:" $DESCRIPTION >> $ADM_DIR/packages/$shortname 2> /dev/null
++  fi
++  echo "FILE LIST:" >> $ADM_DIR/packages/$shortname
++  ( cd $ROOT/ ; $packagecompression -dc | $TAR -xlUpvf - | sort ) < $package >> $TMP/$shortname 2> /dev/null
++  if [ "$( grep '^\./' $TMP/$shortname | wc -l | tr -d ' ')" = "1" ]; then
++    # Good.  We have a package that meets the Slackware spec.
++    cat $TMP/$shortname >> $ADM_DIR/packages/$shortname
++  else
++    # Some dumb bunny built a package with something other than makepkg.  Bad!
++    # Oh well.  Bound to happen.  Par for the course.  Fix it and move on...
++    echo "WARNING:  Package has not been created with 'makepkg'"
++    echo './' >> $ADM_DIR/packages/$shortname
++    cat $TMP/$shortname >> $ADM_DIR/packages/$shortname
++  fi
++  rm -f $TMP/$shortname
++
++  # It's a good idea to make sure those newly installed libraries
++  # are properly activated for use:
++  if [ -x /sbin/ldconfig ]; then
++    /sbin/ldconfig
++  fi
++
++  if [ -f $ROOT/install/doinst.sh ]; then
++    if [ "$MODE" = "install" ]; then
++      echo "Executing install script for $(basename $package)."
++    fi
++    # If bash is available, use sed to convert the install script to use pushd/popd
++    # rather than spawning subshells which is slow on ARM.  This will also speed up
++    # install script processing on any platform.
++    if [ -x /bin/bash ]; then
++      ( cd $ROOT/ ; sed -e's?^( cd \([^;]*\);\(.*\) )$?pushd \1 \&\> /dev/null ; \2 ; popd \&\> /dev/null?g ' install/doinst.sh | /bin/bash ; )
++    else
++      ( cd $ROOT/ ; sh install/doinst.sh ; )
++    fi
++  fi 
++  # Clean up the mess...
++  if [ -d $ROOT/install ]; then
++    if [ -r $ROOT/install/doinst.sh ]; then
++      cp $ROOT/install/doinst.sh $ADM_DIR/scripts/$shortname
++      chmod 755 $ADM_DIR/scripts/$shortname
++    fi
++    # /install/doinst.sh and /install/slack-* are reserved locations for the package system.
++    ( cd $ROOT/install ; rm -f doinst.sh slack-* 1> /dev/null 2>&1 )
++    rmdir $ROOT/install 1> /dev/null 2>&1
++  fi
++  # If we used a scan directory, get rid of it:
++  if [ -d "$TMP/scan$$" ]; then
++    rm -rf "$TMP/scan$$"
++  fi
++  rm -f $TMP/tmpmsg$$ $TMP/reply$$
++  if [ "$MODE" = "install" ]; then
++    echo "Package $(basename $package) installed."
++    echo
++  fi
++done
++
++exit $EXITSTATUS
+diff -ruN sbotools-2.0-orig/pkg_upg sbotools-2.0/pkg_upg
+--- sbotools-2.0-orig/pkg_upg	1970-01-01 01:00:00.000000000 +0100
++++ sbotools-2.0/pkg_upg	2016-08-28 00:32:09.033092819 +0200
+@@ -0,0 +1,333 @@
++#!/bin/bash
++# Copyright 1999  Patrick Volkerding, Moorhead, Minnesota, USA 
++# Copyright 2001, 2002, 2003  Slackware Linux, Inc., Concord, California, USA
++# Copyright 2009, 2015  Patrick J. Volkerding, Sebeka, MN, USA
++# Copyright 2015  Michal Nazarewicz <mina86@mina86.com>
++# All rights reserved.
++#
++# Redistribution and use of this script, with or without modification, is
++# permitted provided that the following conditions are met:
++#
++# 1. Redistributions of this script must retain the above copyright
++#    notice, this list of conditions and the following disclaimer.
++#
++#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
++#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
++#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
++#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
++#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
++#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
++#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
++#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
++#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++#
++# Wed 27 Aug 00:30 CEST 2016  
++# Renamed installpkg to pkg_in, removepkg to pkg_del and moved
++# these pieces to /usr/local to where they belong.
++
++# Return a package name that has been stripped of the dirname portion
++# and any of the valid extensions (only):
++pkgbase() {
++  PKGRETURN=${1##*/}
++  case "$PKGRETURN" in *.t[gblx]z)
++    PKGRETURN=${PKGRETURN%.*}
++  esac
++  echo "$PKGRETURN"
++}
++
++usage() {
++ cat << EOF
++
++Usage: upgradepkg newpackage [newpackage2 ... ]
++       upgradepkg oldpackage%newpackage [oldpackage2%newpackage2 ... ]
++
++Upgradepkg upgrades a Slackware package (.tgz, .tbz, .tlz, .txz) from an
++older version to a newer one.  It does this by INSTALLING the new package
++onto the system, and then REMOVING any files from the old package that
++aren't in the new package.  If the old and new packages have the same
++name, a single argument is all that is required.  If the packages have
++different names, supply the name of the old package followed by a percent
++symbol (%), then the name of the new package.  Do not add any extra
++whitespace between pairs of old/new package names.
++
++Before upgrading a package, save any configuration files (such as in /etc)
++that you wish to keep.  Sometimes these will be preserved, but it depends
++on the package.  If you want to force new versions of the config files
++to be installed, remove the old ones manually prior to running upgradepkg.
++
++To upgrade in a directory other than / (such as /mnt):  
++
++   ROOT=/mnt upgradepkg package.tgz (or .tbz, .tlz, .txz)
++
++EOF
++}
++
++# Make sure there's a proper temp directory:
++TMP=$ROOT/var/log/setup/tmp
++# If the $TMP directory doesn't exist, create it:
++if [ ! -d $TMP ]; then
++  rm -rf $TMP # make sure it's not a symlink or something stupid
++  mkdir $TMP
++  chmod 700 $TMP # no need to leave it open
++fi
++
++# This script expects an 022 umask:
++umask 022
++
++# $ROOT defined?
++if [ -d "$ROOT" ]; then
++  export ROOT
++else
++  unset ROOT
++fi
++
++# --help or no args?
++if [ "$1" = "" -o "$1" = "--help" -o "$1" = "-?" ]; then
++  usage;
++  exit 1;
++fi
++
++# Arg processing loop.  These must come before any packages are listed.
++while [ 0 ]; do
++  if [ "$1" = "--no-paranoia" ]; then
++    # Enable --no-paranoia mode.  This is so not-recommended that we're
++    # not even going to document it. ;)   If a file used to be directly
++    # managed and now is moved into place, using --no-paranoia will cause
++    # it to improperly disappear.  It does slightly speed things up, though.
++    # Don't use it.
++    NOT_PARANOID="true"
++    shift 1
++  elif [ "$1" = "--install-new" ]; then
++    # Install packages that do not already have an installed version.
++    # The usual default is to skip them.
++    INSTALL_NEW="yes"
++    shift 1
++  elif [ "$1" = "--reinstall" ]; then
++    # Reinstall packages even if the installed one is the same version.
++    REINSTALL="true"
++    shift 1
++  elif [ "$1" = "--verbose" -o "$1" = "-v" ]; then
++    # We're adding a --verbose mode that doesn't filter removepkg as much
++    VERBOSE="verbose"
++    shift 1
++  elif [ "$1" = "--dry-run" ]; then
++    # Output a report about which packages would be installed or upgraded
++    # but don't actually perform the upgrades.
++    DRY_RUN="true"
++    shift 1
++  else # no more args
++    break;
++  fi
++done # processing args
++
++# Here's a function to figure out the package name from one of those
++# new long filenames.  We'll need this to double check the name of the
++# old package.
++
++package_name() {
++  STRING=$(pkgbase "$1")
++  case "$STRING" in
++  *-*-*-*)
++    # At least four segments, strip version arch and build and return name:
++    echo "${STRING%-*-*-*}"
++    # cruft for later ;)
++    # BUILD=${STRING##*-}
++    # STRING=${STRING%*-}
++    # ARCH=${STRING##*-}
++    # STRING=${STRING%*-}
++    # VER=${STRING%*-}
++    ;;
++  *)
++    # Old style package name with one segment or we don't have four
++    # segments: return the old-style (or out of spec) package name.
++    echo $STRING
++  esac
++}
++
++ERRCODE=0
++
++# Main processing loop:
++for ARG; do
++  OLD=${ARG%'%'*}  # first segment, = $ARG if no %
++  NEW=${ARG#*'%'}  # second segment, = $ARG if no %
++
++  # Simple package integrity check:
++  if ! [ -f "$NEW" ]; then
++    ERRCODE=4
++    echo "Cannot install $ARG:  file not found"
++    continue;
++  fi
++
++  # Figure out the names of the old and new packages:
++  INCOMINGDIR=$(dirname $NEW)
++  # These are the package names with the extension:
++  NNAME=${NEW##*/}
++  ONAME=${OLD##*/}
++  # These are the package names without the extension:
++  OLD=$(pkgbase $OLD)
++  NEW=$(pkgbase $NEW)
++
++  # Make sure the extension is valid:
++  if [ "$NNAME" = "$NEW" ]; then
++    # We won't throw an ERRCODE for this, but the package is skipped:
++    echo "Cannot install $OLD:  invalid package extension"
++    continue;
++  fi
++
++  # Check and fix the old package name:
++  SHORT="$(package_name $OLD)"
++  if [ ! -r $ROOT/var/log/packages/$OLD ]; then
++    if ls $ROOT/var/log/packages/$SHORT* 1> /dev/null 2> /dev/null ; then
++      for installed_package in $ROOT/var/log/packages/$SHORT* ; do
++        if [ "$(package_name $installed_package)" = "$SHORT" ]; then # found one
++          OLD="${installed_package##*/}"
++          break
++        fi
++      done
++    fi
++  fi
++
++  # Test to see if both the old and new packages are where we expect them
++  # to be -- skip to the next package (or package pair) if anything's wrong:
++
++  if [ ! -r $ROOT/var/log/packages/$OLD ]; then
++    if [ ! "$INSTALL_NEW" = "yes" ]; then
++      if [ "$DRY_RUN" = "true" ]; then
++        echo "$OLD would not be upgraded (no installed package named $SHORT)."
++      else
++        echo
++        echo "Error:  there is no installed package named $OLD."
++        echo "        (looking for $ROOT/var/log/packages/$OLD)"
++        echo
++      fi
++      ERRCODE=1
++    else # --install-new was given, so install the new package:
++      if [ "$DRY_RUN" = "true" ]; then
++        echo "$NEW would be installed (new package)."
++      else
++        cat << EOF
++
+++==============================================================================
++| Installing new package $INCOMINGDIR/$NNAME
+++==============================================================================
++
++EOF
++        /usr/local/sbin/pkg_in $INCOMINGDIR/$NNAME
++      fi
++    fi
++    continue;
++  elif [ ! -r "$INCOMINGDIR/$NNAME" ]; then
++    if [ "$DRY_RUN" = "true" ]; then
++      echo "$NEW incoming package not found (command line)."
++    else
++      echo
++      echo "Error:  incoming package $INCOMINGDIR/$NNAME not found."
++      echo
++    fi
++    ERRCODE=1
++    continue;
++  fi
++
++  # Unless --reinstall was given, compare the package names
++  # and skip any exact matches:
++  if [ ! "$REINSTALL" = "true" ]; then
++    if [ "$OLD" = "$NEW" ]; then
++      if [ "$DRY_RUN" = "true" ]; then
++        echo "$NEW would be skipped (already installed)."
++      else
++        cat << EOF
++
+++==============================================================================
++| Skipping package $NEW (already installed)
+++==============================================================================
++
++EOF
++      fi
++      continue;
++    fi
++  fi
++
++  # Showtime.  Let's do the upgrade.  First, we will rename all the
++  # installed packages with this basename to make them easy to remove later:
++
++  TIMESTAMP=$(date +%Y-%m-%d,%T)
++  SHORT="$(package_name $OLD)"
++  if [ "$DRY_RUN" = "true" ]; then
++    echo -n "$NEW would upgrade: "
++    for installed_package in $ROOT/var/log/packages/$SHORT* ; do
++    if [ "$(package_name $installed_package)" = "$SHORT" ]; then
++      echo -n "$(pkgbase $installed_package)"
++    fi
++    done
++    echo
++    continue
++  fi
++  for installed_package in $ROOT/var/log/packages/$SHORT* ; do
++    if [ "$(package_name $installed_package)" = "$SHORT" ]; then
++      mv $installed_package ${installed_package}-upgraded-$TIMESTAMP
++    fi
++  done
++  for installed_script in $ROOT/var/log/scripts/$SHORT* ; do
++    if [ "$(package_name $installed_script)" = "$SHORT" ]; then
++      if [ -r $installed_script ]; then
++        mv $installed_script ${installed_script}-upgraded-$TIMESTAMP
++      fi
++    fi
++  done
++
++  # Print a banner for the current upgrade:
++  cat << EOF
++
+++==============================================================================
++| Upgrading $OLD package using $INCOMINGDIR/$NNAME
+++==============================================================================
++
++EOF
++
++  # Next, the new package is pre-installed:
++  if [ "$VERBOSE" = "verbose" ]; then
++    /usr/local/sbin/pkg_in $INCOMINGDIR/$NNAME
++    RETCODE=$?
++  else
++    echo "Pre-installing package $NEW..."
++    /usr/local/sbin/pkg_in $INCOMINGDIR/$NNAME 1> /dev/null
++    RETCODE=$?
++  fi
++  # Make sure that worked:
++  if [ ! $RETCODE = 0 ]; then
++    echo "ERROR:  Package $INCOMINGDIR/$NNAME did not install"
++    echo "correctly.  You may need to reinstall your old package"
++    echo "to avoid problems.  Make sure the new package is not"
++    echo "corrupted."
++    sleep 30
++    # Skip this package, but still try to proceed.  Good luck...
++    continue;
++  fi
++
++  # Now, the leftovers from the old package(s) can go.  Pretty simple, huh? :)
++  for rempkg in "$ROOT/var/log/packages/"*"-$TIMESTAMP"; do
++    if [ "$VERBOSE" = "verbose" ]; then
++      /usr/local/sbin/pkg_del "${rempkg##*/}"
++    else
++      /usr/local/sbin/pkg_del "${rempkg##*/}" | grep -v 'Skipping\.\|Removing files:'
++    fi
++  done
++  echo
++
++  # Again!  Again!
++  # Seriously, the reinstalling of a package can be crucial if any files
++  # shift location, so we should always reinstall as the final step:
++  if [ ! "$NOT_PARANOID" = "true" ]; then
++    /usr/local/sbin/pkg_in $INCOMINGDIR/$NNAME
++  fi
++
++  echo "Package $OLD upgraded with new package $INCOMINGDIR/$NNAME."
++  ERRCODE=0
++done
++
++if [ ! "$DRY_RUN" = "true" ]; then
++  echo
++fi
++exit $ERRCODE
++
+diff -ruN sbotools-2.0-orig/README sbotools-2.0/README
+--- sbotools-2.0-orig/README	2016-07-02 10:30:59.000000000 +0200
++++ sbotools-2.0/README	2016-08-28 00:46:52.643781060 +0200
+@@ -14,3 +14,5 @@
+ 
+ sbotools is written and maintained by d4wnr4z0r, xocel, and pink_mist;
+ we can be contacted in #sbotools on freenode.
++
++Additional patches added to enable user package separation on Slackware.
+diff -ruN sbotools-2.0-orig/sboconfig sbotools-2.0/sboconfig
+--- sbotools-2.0-orig/sboconfig	2016-07-02 10:30:59.000000000 +0200
++++ sbotools-2.0/sboconfig	2016-08-28 00:38:55.056454537 +0200
+@@ -40,7 +40,7 @@
+       JOBS: numeric -j setting to feed to make for multicore systems.
+   -p|--pkg-dir FALSE:
+       PKG_DIR: set a directory to store packages in.
+-  -s|--sbo-home /usr/sbo:
++  -s|--sbo-home /usr/ports:
+       SBO_HOME: set the SBo directory.
+   -o|--local-overrides FALSE:
+       LOCAL_OVERRIDES: a directory containing local overrides.
+diff -ruN sbotools-2.0-orig/SBO-Lib/lib/SBO/Lib.pm sbotools-2.0/SBO-Lib/lib/SBO/Lib.pm
+--- sbotools-2.0-orig/SBO-Lib/lib/SBO/Lib.pm	2016-07-02 10:30:59.000000000 +0200
++++ sbotools-2.0/SBO-Lib/lib/SBO/Lib.pm	2016-08-28 00:41:54.514618454 +0200
+@@ -113,7 +113,7 @@
+ 
+ # define this to facilitate unit testing - should only ever be modified from
+ # t/01-test.t
+-our $pkg_db = '/var/log/packages';
++our $pkg_db = '/usr/local/var/log/packages';
+ 
+ # _race::cond will allow both documenting and testing race conditions
+ # by overriding its implementation for tests
+@@ -178,7 +178,7 @@
+ 		my ($fh, $exit) = open_read $conf_file;
+ 		if ($exit) {
+ 			warn $fh;
+-			$config{SBO_HOME} = '/usr/sbo';
++			$config{SBO_HOME} = '/usr/ports';
+ 			return;
+ 		}
+ 		my $text = do {local $/; <$fh>};
+@@ -189,14 +189,14 @@
+ 		$config{$key} = $conf_values{$key} if exists $conf_values{$key};
+ 	}
+ 	$config{JOBS} = 'FALSE' unless $config{JOBS} =~ /^\d+$/;
+-	$config{SBO_HOME} = '/usr/sbo' if $config{SBO_HOME} eq 'FALSE';
++	$config{SBO_HOME} = '/usr/ports' if $config{SBO_HOME} eq 'FALSE';
+ }
+ 
+ read_config();
+ 
+ # some stuff we'll need later - define first two as our for unit testing
+ our $distfiles = "$config{SBO_HOME}/distfiles";
+-our $repo_path = "$config{SBO_HOME}/repo";
++our $repo_path = "$config{SBO_HOME}/";
+ our $slackbuilds_txt = "$repo_path/SLACKBUILDS.TXT";
+ my $name_regex = '\ASLACKBUILD\s+NAME:\s+';
+ 
+@@ -264,7 +264,7 @@
+ 	return join "\n", @lines;
+ }
+ 
+-# Move everything in /usr/sbo except distfiles and repo dirs into repo dir
++# Move everything in /usr/ports except distfiles and repo dirs into repo dir
+ sub migrate_repo {
+ 	make_path($repo_path) unless -d $repo_path;
+ 	_race::cond '$repo_path can be deleted between being made and being used';
+@@ -1233,7 +1233,7 @@
+ # run upgradepkg for a created package
+ sub do_upgradepkg {
+ 	script_error('do_upgradepkg requires an argument.') unless @_ == 1;
+-	system('/sbin/upgradepkg', '--reinstall', '--install-new', shift);
++	system('/usr/local/sbin/pkg_upg', '--reinstall', '--install-new', shift);
+ 	return 1;
+ }
+ 
+diff -ruN sbotools-2.0-orig/sboremove sbotools-2.0/sboremove
+--- sbotools-2.0-orig/sboremove	2016-07-02 10:30:59.000000000 +0200
++++ sbotools-2.0/sboremove	2016-08-28 00:38:55.059787898 +0200
+@@ -193,7 +193,7 @@
+ 	}
+ }
+ 
+-system("/sbin/removepkg", $_) for @confirmed;
++system("/usr/local/sbin/pkg_del", $_) for @confirmed;
+ 
+ say "All operations have completed successfully.";
+ 
